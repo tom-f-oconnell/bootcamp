@@ -87,18 +87,18 @@ def lcs(s1, s2):
                 M[i+1,j+1] = M[i,j] + 1
 
                 if M[i+1,j+1] > max_length_so_far:
-                    # TODO might be off by one
-                    candidates = {s1[i-z:i]}
+                    max_length_so_far = int(M[i+1,j+1])
+                    candidates = {s1[i - max_length_so_far + 1: i + 1]}
+
                 elif M[i+1,j+1] == max_length_so_far:
-                    candidates.add(s1[i-z:i]}
+                    candidates.add(s1[i - max_length_so_far + 1: i + 1])
 
             else:
                 M[i,j] = 0
 
-    print(M)
-    print(candidates)
+    candidates.add('')
 
-    return random.choice(candidates)
+    return candidates
 
 """ For exercise 1.5 """
 
@@ -118,9 +118,11 @@ for nuc in ('DNA', 'RNA'):
             # don't need to worry about mutability because seq is a string
             s1 = revcomp_a(seq, nucleic_acid=nuc)
             s2 = revcomp_b(seq, nucleic_acid=nuc)
+            """
             print(seq)
             print(s1)
             print(s2)
+            """
             assert s1 == s2
             print('Reverse complement of ' + seq + ' is ' + s1)
 
@@ -128,8 +130,7 @@ print('No inconsistencies between my two reverse complement algorithms.')
 
 """ Run exercise 1.4 code """
 
-# TODO change back to 1000 after fixing bug
-max_length = 10
+max_length = 1000
 samples = 10
 s1_lengths = random.sample(range(max_length),samples) + [0]
 s2_lengths = random.sample(range(max_length),samples) + [0]
@@ -150,15 +151,14 @@ for i in range(test_iterations):
         # artificially give the strings what is ***likely*** going to be an LCS (not always)
         # ...not likely for 0 case though, or perhaps other low string lengths
 
-        # TODO might be off be one. check.
         s1 = s1[:lcs_offset1] + s2[lcs_offset2:lcs_offset2 + lcs_length] + \
             s1[lcs_offset1 + lcs_length + 1:]
         
-        M,B = lcs(s1,s2)
-        print('S1, S2, and their LCS determined w/ dynamic programming')
+        candidates = lcs(s1,s2)
+        print('S1, S2, and their LCS(s) determined w/ dynamic programming')
         print(s1)
         print(s2)
-        print(backtrack(B,s1,s2))
+        print(candidates)
 
 
 """ Run exercise 1.5 code """
