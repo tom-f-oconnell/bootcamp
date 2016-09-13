@@ -47,7 +47,7 @@ def gc_map(seq, block_size, gc_thresh):
     # break the sequence into regions of block length
     # should be same length as `contents`
     mapped = []
-    # TODO maybe minus one?
+
     for i in range(0, len(seq) // block_size):
         start = i * block_size
         mapped += [seq[start: start + block_size]]
