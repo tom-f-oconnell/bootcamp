@@ -160,4 +160,6 @@ longest = longest_orf(seq)
 protein = translation(longest)
 print(protein)
 
+# searching w/ blastp for the above sequence, it seems it is a...
+# "two-component sensor histidine kinase BarA [Salmonella enterica]"
 
