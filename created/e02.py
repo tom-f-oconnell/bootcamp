@@ -104,6 +104,11 @@ def longest_orf(seq):
 
         offset = (offset + 1) % 3
 
+    if longest == None:
+        return None
+    else:
+        return seq[this_start:i]
+
 def translation(seq):
     """ Takes a DNA sequence of length multiple of 3, and converts to protein string. """
     
@@ -130,14 +135,13 @@ if os.path.isfile(output):
     raise FileExistsError(output + ' already exists')
 
 width =  60
-tail = seq[ (-1) * (len(seq) % width) :]
-# add the newlines back to the sequence (every 60 characters)
-all_but_tail = ''.join([seq[i:i + width] + '\n' for i in range(0, len(seq), width)])
-# should be len(seq) // 60 extra characters
-print(len(seq) // width)
-print(len(all_but_tail))
-print(len(seq) - len(seq) % width)
-print(len(seq))
 
-#with open(output, 'w') as f:
-    #f.write(prefix
+# add the newlines back to the sequence (every 60 characters)
+all_but_tail = ''.join([mapped_seq[i:i + width] + '\n' for i in range(0, len(seq), width)])
+
+with open(output, 'w') as f:
+    f.write(prefix + all_but_tail)
+
+# 2.4
+
+
