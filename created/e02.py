@@ -1,6 +1,8 @@
 
 """ Caltech programming bootcamp (Summer Bi/Be/NB) Exercise 2 """
 
+import bioinfo_dicts as bd
+
 """ 2.2b Parsing a FASTA file """
 
 def open_fasta():
@@ -92,5 +94,18 @@ def longest_orf(seq):
             maybe_starts = {(off, b) for off, b in maybe_starts if off != offset}
 
         offset = (offset + 1) % 3
+
+def translation(seq):
+    """ Takes a DNA sequence of length multiple of 3, and converts to protein string. """
+    
+    protein_seq = ''
+
+    for i in range(0,len(seq),3):
+        protein_seq += codons[seq[i:i + 3]]
+
+    return protein_seq
+
+
+""" Run the functions we wrote to get the output missing. """
 
 
