@@ -10,3 +10,6 @@ gimme_phi.txt
 *.eps
 *.tif
 *.lsm
+
+# Ignore VI swap files
+*.swp
