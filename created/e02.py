@@ -3,13 +3,15 @@
 
 """ 2.2b Parsing a FASTA file """
 
-with open('../data/aligned.fasta','r') as fasta_file:
-    data = fasta_file.read().strip().split('>')
+def open_fasta():
+    """ Returns sequence from salmonella fasta file provided. """
 
-data = [x.split(']\n')[1].replace('\n','') for x in data if len(x) >= 2]
+    with open('../data/salmonella_spi1_region.fna','r') as fasta_file:
+        data = fasta_file.read().strip().split('>')
 
-# a list of as many sequences as were in the FASTA file
-print(data)
+    data = [x.split(']\n')[1].replace('\n','') for x in data if len(x) >= 2]
+
+    return data[0]
 
 """ 2.3 Pathogenicity islands """
 
@@ -49,5 +51,46 @@ def gc_map(seq, block_size, gc_thresh):
             mapped[i] = mapped[i].lower()
     
     return ''.join(mapped)
+
+""" 2.4 ORF detection """
+
+def longest_orf(seq):
+    """ ORF finding NOT considering open reading frames. 
+    Will return None if no ORFs are found. """
+    
+    stop_codons = {'TGA','TAG','TAA'}
+    
+    i = 0
+    offset = 0
+    
+    # will be tuples of (offset, start_index)
+    maybe_starts = {}
+
+    # should be a tuple of (start_index, stop_codon_first_index)
+    longest = None
+    longest_length = 0
+    
+    while i < len(seq) - 3
+        
+        codon = seq[i:i+3]
+
+        if codon == 'ATG':
+            maybe_starts.add((offset, start_index))
+    
+        elif codon in stop_codons:
+           
+            # get all start codon indices in same offset
+            starts = {start for old_offset, start in maybe_starts \
+                if old_offset == offset}
+
+            this_start = min(starts)
+            if i - this_start > longest_length:
+                longest_length = i - this_start
+                longest = (this_start, i)
+            
+            # remove all putative starts with same offset (there has been a stop)
+            maybe_starts = {(off, b) for off, b in maybe_starts if off != offset}
+
+        offset = (offset + 1) % 3
 
 
