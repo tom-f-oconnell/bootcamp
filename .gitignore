@@ -1,3 +1,12 @@
 __pycache__/
 data/gcmapped_salmonella.fna
 gimme_phi.txt
+
+# Ignore image files.
+*.jpg
+*.tiff
+*.svg
+*.pdf
+*.eps
+*.tif
+*.lsm

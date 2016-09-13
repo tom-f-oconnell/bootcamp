@@ -3,6 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+def ecdf(x):
+    print(x)
+
 data = np.loadtxt('../../data/collins_switch.csv', delimiter=',', skiprows=2)
 
 iptg = data[:,0]
