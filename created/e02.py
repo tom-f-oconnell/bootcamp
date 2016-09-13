@@ -2,6 +2,7 @@
 """ Caltech programming bootcamp (Summer Bi/Be/NB) Exercise 2 """
 
 import bioinfo_dicts as bd
+import os
 
 """ 2.2b Parsing a FASTA file """
 
@@ -120,8 +121,23 @@ def translation(seq):
 
 thresh = 0.45
 block_size = 1000
-seq = open_fasta('../data/salmonella_spi1_region.fna')
+prefix, seq = open_fasta('../data/salmonella_spi1_region.fna', want_prefix=True)
 
 mapped_seq = gc_map(seq, block_size, thresh)
 
+output = '../data/gcmapped_salmonella.fna'
+if os.path.isfile(output):
+    raise FileExistsError(output + ' already exists')
 
+width =  60
+tail = seq[ (-1) * (len(seq) % width) :]
+# add the newlines back to the sequence (every 60 characters)
+all_but_tail = ''.join([seq[i:i + width] + '\n' for i in range(0, len(seq), width)])
+# should be len(seq) // 60 extra characters
+print(len(seq) // width)
+print(len(all_but_tail))
+print(len(seq) - len(seq) % width)
+print(len(seq))
+
+#with open(output, 'w') as f:
+    #f.write(prefix
