@@ -93,15 +93,26 @@ def longest_orf(seq, n=1):
             # get all start codon indices in same offset
             starts = {start for old_offset, start in maybe_starts \
                 if old_offset == offset}
-             
+            
+            # see if any current ORFs can contend with current n largest
             if len(starts) > 0:
-                
+                # the earliest start in frame will yield the single longest
+                # but there could also be multiple of n longest in frame here
+                # TODO ignoring above case for now, for simplicity
                 this_start = min(starts)
-                if len(longest) < n or i - this_start > cutoff_length:
+
+                if len(longest) < n:
                     longest[i - this_start] = (this_start, i)
 
-                    if len(longest) >= n:
-                        cutoff_length = min(longest.keys())
+                elif i - this_start > cutoff_length:
+                    longest.pop(cutoff_length)
+                    longest[i - this_start] = (this_start, i)
+
+                cutoff_length = min(longest.keys())
+                """
+                print(longest)
+                print(cutoff_length)
+                """
                 
                 # remove all putative starts with same offset (there has been a stop)
                 maybe_starts = {(off, b) for off, b in maybe_starts if off != offset}
@@ -116,7 +127,6 @@ def longest_orf(seq, n=1):
         for key in longest:
             start, end = longest[key]
             orfs.append(seq[start:end])
-
         return orfs
 
 def translation(seq):
@@ -168,3 +178,4 @@ print(protein)
 print('Five longest ORFs, translated:')
 longest = longest_orf(seq, n=5)
 translations = [translation(x) for x in longest]
+print(translations)
