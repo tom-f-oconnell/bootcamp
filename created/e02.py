@@ -65,7 +65,7 @@ def gc_map(seq, block_size, gc_thresh):
 
 """ 2.4 ORF detection """
 
-def longest_orf(seq):
+def longest_orf(seq, n=1):
     """ ORF finding NOT considering open reading frames. 
     Will return None if no ORFs are found. """
     
@@ -73,13 +73,13 @@ def longest_orf(seq):
     
     i = 0
     offset = 0
+    cutoff_length = 0
     
     # will be tuples of (offset, start_index)
     maybe_starts = set()
 
     # should be a tuple of (start_index, stop_codon_first_index)
-    longest = None
-    longest_length = 0
+    longest = dict()
     
     while i < len(seq) - 3:
         
@@ -97,26 +97,27 @@ def longest_orf(seq):
             if len(starts) > 0:
                 
                 this_start = min(starts)
-                if i - this_start > longest_length:
-                    longest_length = i - this_start
-                    longest = (this_start, i)
-                    print('New longest:', longest)
+                if len(longest) < n or i - this_start > cutoff_length:
+                    longest[i - this_start] = (this_start, i)
+
+                    if len(longest) >= n:
+                        cutoff_length = min(longest.keys())
                 
                 # remove all putative starts with same offset (there has been a stop)
                 maybe_starts = {(off, b) for off, b in maybe_starts if off != offset}
-                print('Filtered: ', maybe_starts)
 
         offset = (offset + 1) % 3
         i += 1
 
-    if longest == None:
+    if len(longest) == 0:
         return None
     else:
-        start, end = longest
-        print(seq[start:end])
-        print(start, end)
-        print(end-start)
-        return seq[start:end]
+        orfs = []
+        for key in longest:
+            start, end = longest[key]
+            orfs.append(seq[start:end])
+
+        return orfs
 
 def translation(seq):
     """ Takes a DNA sequence of length multiple of 3, and converts to protein string. """
@@ -156,10 +157,14 @@ if _output:
 
 # 2.4
 
-longest = longest_orf(seq)
+longest = longest_orf(seq)[0]
 protein = translation(longest)
+print('Single longest ORF, translated:')
 print(protein)
 
 # searching w/ blastp for the above sequence, it seems it is a...
 # "two-component sensor histidine kinase BarA [Salmonella enterica]"
 
+print('Five longest ORFs, translated:')
+longest = longest_orf(seq, n=5)
+translations = [translation(x) for x in longest]
