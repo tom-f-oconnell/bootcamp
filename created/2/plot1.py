@@ -35,4 +35,4 @@ plt.legend(('Low concentration', 'High concentration'), loc='upper right')
 plt.show()
 
 # save the figure
-plt.savefig('egg_area_histogram.svg', bbox_inches='tight')
+plt.savefig('egg_area_histogram.pdf', bbox_inches='tight')
