@@ -49,22 +49,29 @@ theor_cdf_low = scipy.stats.norm.cdf(x, loc=np.mean(low), scale=np.std(low))
 theor_cdf_high = scipy.stats.norm.cdf(x, loc=np.mean(high), scale=np.std(high))
 
 if show_food_ecdfs:
-    plt.plot(xhigh, yhigh, marker='.', linestyle='none', color='g')
+    e1, = plt.plot(xhigh, yhigh, marker='.', linestyle='none', color='g', label='Empirical')
+    t1, = plt.plot(x, theor_cdf_high, marker='.', linestyle='none', color='k', \
+        label='Theoretical')
+
     plt.title('High food')
     plt.xlabel('Egg cross sectional area (um$^2$)')
     plt.ylabel('Cumulative probability')
-
-    plt.plot(x, theor_cdf_high, marker='.', linestyle='none', color='k')
+    plt.margins(0.02)
+    # TODO why not actually bottom right (switched to top left)?
+    plt.legend(handles=[e1,t1], loc='bottom right')
 
     plt.show()
 
     plt.figure()
-    plt.plot(xlo, ylo, marker='.', linestyle='none', color='g')
+    e2, = plt.plot(xlo, ylo, marker='.', linestyle='none', color='g', label='Empirical')
+    t2, = plt.plot(x, theor_cdf_low, marker='.', linestyle='none', color='k', \
+        label='Theoretical')
+
     plt.title('Low food')
     plt.xlabel('Egg cross sectional area (um$^2$)')
     plt.ylabel('Cumulative probability')
-
-    plt.plot(x, theor_cdf_low, marker='.', linestyle='none', color='k')
+    plt.margins(0.02)
+    plt.legend(handles=[e2,t2], loc='bottom right')
 
     plt.show()
 
