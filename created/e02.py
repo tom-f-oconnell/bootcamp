@@ -5,15 +5,18 @@ import bioinfo_dicts as bd
 
 """ 2.2b Parsing a FASTA file """
 
-def open_fasta():
-    """ Returns sequence from salmonella fasta file provided. """
+def open_fasta(seq_file, want_prefix=False):
+    """ Returns sequence from fasta file provided. """
 
-    with open('../data/salmonella_spi1_region.fna','r') as fasta_file:
-        data = fasta_file.read().strip().split('>')
+    with open(seq_file, 'r') as fasta_file:
+        # the first line should be the metadata if there is just one seq
+        prefix = fasta_file.readline()
+        data = fasta_file.read().strip().replace('\n','')
 
-    data = [x.split(']\n')[1].replace('\n','') for x in data if len(x) >= 2]
-
-    return data[0]
+    if want_prefix:
+        return (prefix, data)
+    else:
+        return data
 
 """ 2.3 Pathogenicity islands """
 
@@ -22,7 +25,7 @@ def gc_blocks(seq, block_size):
     
     contents = []
     i = block_size
-    while i < len(seq):
+    while i < len(seq) - block_size:
         count = 0
 
         for base in seq[i - block_size:i]:
@@ -30,6 +33,8 @@ def gc_blocks(seq, block_size):
                 count += 1
 
         contents.append(count / block_size)
+
+        i += block_size
 
     return tuple(contents)
 
@@ -41,10 +46,13 @@ def gc_map(seq, block_size, gc_thresh):
 
     # break the sequence into regions of block length
     # should be same length as `contents`
-    mapped = [seq[x:block_size] for x in range(0,len(seq),block_size) \
-        if len(seq[x:block_size]) == block_size]
-
-    for i, content in contents:
+    mapped = []
+    # TODO maybe minus one?
+    for i in range(0, len(seq) // block_size):
+        start = i * block_size
+        mapped += [seq[start: start + block_size]]
+    
+    for i, content in enumerate(contents):
          
         # capitalize every block over threshold
         if content > gc_thresh:
@@ -72,7 +80,7 @@ def longest_orf(seq):
     longest = None
     longest_length = 0
     
-    while i < len(seq) - 3
+    while i < len(seq) - 3:
         
         codon = seq[i:i+3]
 
@@ -107,5 +115,13 @@ def translation(seq):
 
 
 """ Run the functions we wrote to get the output missing. """
+
+# 2.3c
+
+thresh = 0.45
+block_size = 1000
+seq = open_fasta('../data/salmonella_spi1_region.fna')
+
+mapped_seq = gc_map(seq, block_size, thresh)
 
 
