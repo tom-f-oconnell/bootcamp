@@ -75,7 +75,7 @@ def longest_orf(seq):
     offset = 0
     
     # will be tuples of (offset, start_index)
-    maybe_starts = {}
+    maybe_starts = set()
 
     # should be a tuple of (start_index, stop_codon_first_index)
     longest = None
@@ -84,30 +84,39 @@ def longest_orf(seq):
     while i < len(seq) - 3:
         
         codon = seq[i:i+3]
-
+        
         if codon == 'ATG':
-            maybe_starts.add((offset, start_index))
-    
+            maybe_starts.add((offset, i))
+         
         elif codon in stop_codons:
            
             # get all start codon indices in same offset
             starts = {start for old_offset, start in maybe_starts \
                 if old_offset == offset}
-
-            this_start = min(starts)
-            if i - this_start > longest_length:
-                longest_length = i - this_start
-                longest = (this_start, i)
-            
-            # remove all putative starts with same offset (there has been a stop)
-            maybe_starts = {(off, b) for off, b in maybe_starts if off != offset}
+             
+            if len(starts) > 0:
+                
+                this_start = min(starts)
+                if i - this_start > longest_length:
+                    longest_length = i - this_start
+                    longest = (this_start, i)
+                    print('New longest:', longest)
+                
+                # remove all putative starts with same offset (there has been a stop)
+                maybe_starts = {(off, b) for off, b in maybe_starts if off != offset}
+                print('Filtered: ', maybe_starts)
 
         offset = (offset + 1) % 3
+        i += 1
 
     if longest == None:
         return None
     else:
-        return seq[this_start:i]
+        start, end = longest
+        print(seq[start:end])
+        print(start, end)
+        print(end-start)
+        return seq[start:end]
 
 def translation(seq):
     """ Takes a DNA sequence of length multiple of 3, and converts to protein string. """
@@ -115,7 +124,7 @@ def translation(seq):
     protein_seq = ''
 
     for i in range(0,len(seq),3):
-        protein_seq += codons[seq[i:i + 3]]
+        protein_seq += bd.codons[seq[i:i + 3]]
 
     return protein_seq
 
@@ -124,24 +133,31 @@ def translation(seq):
 
 # 2.3c
 
+_output = False
+
 thresh = 0.45
 block_size = 1000
 prefix, seq = open_fasta('../data/salmonella_spi1_region.fna', want_prefix=True)
 
 mapped_seq = gc_map(seq, block_size, thresh)
 
-output = '../data/gcmapped_salmonella.fna'
-if os.path.isfile(output):
-    raise FileExistsError(output + ' already exists')
+if _output:
+    output = '../data/gcmapped_salmonella.fna'
+    if os.path.isfile(output):
+        raise FileExistsError(output + ' already exists')
 
-width =  60
+    width =  60
 
-# add the newlines back to the sequence (every 60 characters)
-all_but_tail = ''.join([mapped_seq[i:i + width] + '\n' for i in range(0, len(seq), width)])
+    # add the newlines back to the sequence (every 60 characters)
+    all_but_tail = ''.join([mapped_seq[i:i + width] + '\n' for i in range(0, len(seq), width)])
 
-with open(output, 'w') as f:
-    f.write(prefix + all_but_tail)
+    with open(output, 'w') as f:
+        f.write(prefix + all_but_tail)
 
 # 2.4
+
+longest = longest_orf(seq)
+protein = translation(longest)
+print(protein)
 
 
