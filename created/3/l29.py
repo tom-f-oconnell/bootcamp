@@ -66,7 +66,7 @@ print('AI Fano: ', np.var(ai_samples) / np.mean(ai_samples))
 
 # TODO seems strange variance in Fano (and std) are still somewhat high
 # despite so many iterations
-rm_samples = sample_random_mutation(n_gen, r, size=100000)
+rm_samples = sample_random_mutation(n_gen, r, size=100000).astype(int)
 
 print('RM mean: ', np.mean(rm_samples))
 print('RM std: ', np.std(rm_samples))
@@ -75,6 +75,7 @@ print('RM Fano: ', np.var(rm_samples) / np.mean(rm_samples))
 x_ai, y_ai = ecdf(ai_samples)
 x_rm, y_rm = ecdf(rm_samples)
 
+plt.figure()
 plt.semilogx(x_ai, y_ai, marker='.', linestyle='none')
 plt.semilogx(x_rm, y_rm, marker='.', linestyle='none')
 plt.legend(('Adaptive immunity', 'Random mutation'))
