@@ -83,19 +83,20 @@ plt.figure()
 x = np.linspace(-6, 6, 1000)
 
 # on the same plot?
-plt.plot(x, np.array([fold_change_bohr(i) for i in x]), color='gray')
+t, = plt.plot(x, np.array([fold_change_bohr(i) for i in x]), color='gray', label='Theoretical')
 plt.title('Fold changes resulting from a range of Bohr parameters')
 plt.xlabel('Bohr parameter')
 plt.ylabel('Fold change')
 plt.margins(0.02)
 
 """ Now fit this model with the experimental data. """
-plt.plot(np.array([bohr_parameter(c, wt_RK_ratio) for c in wt_iptg]), wt_fc, marker='.', \
-    color='r')
-plt.plot(np.array([bohr_parameter(c, q18m_RK_ratio) for c in q18m_iptg]), q18m_fc, marker='.', \
-    color='g')
-plt.plot(np.array([bohr_parameter(c, q18a_RK_ratio) for c in q18a_iptg]), q18a_fc, marker='.', \
-    color='b')
+r, = plt.plot(np.array([bohr_parameter(c, wt_RK_ratio) for c in wt_iptg]), wt_fc, marker='.', \
+    color='r', linestyle='none', label='WT')
+g, = plt.plot(np.array([bohr_parameter(c, q18m_RK_ratio) for c in q18m_iptg]), q18m_fc, \
+    marker='.', color='g', linestyle='none', label='q18m')
+b, = plt.plot(np.array([bohr_parameter(c, q18a_RK_ratio) for c in q18a_iptg]), q18a_fc, \
+    marker='.', color='b', linestyle='none', label='q18a')
 
+plt.legend(handles=[t,r,g,b], loc='bottom right')
 plt.show()
 
