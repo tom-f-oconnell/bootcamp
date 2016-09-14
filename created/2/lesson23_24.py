@@ -57,8 +57,8 @@ if show_food_ecdfs:
     plt.xlabel('Egg cross sectional area (um$^2$)')
     plt.ylabel('Cumulative probability')
     plt.margins(0.02)
-    # TODO why not actually bottom right (switched to top left)?
-    plt.legend(handles=[e1,t1], loc='bottom right')
+    # TODO why not actually lower right (switched to top left)?
+    plt.legend(handles=[e1,t1], loc='lower right')
 
     plt.show()
 
@@ -71,7 +71,7 @@ if show_food_ecdfs:
     plt.xlabel('Egg cross sectional area (um$^2$)')
     plt.ylabel('Cumulative probability')
     plt.margins(0.02)
-    plt.legend(handles=[e2,t2], loc='bottom right')
+    plt.legend(handles=[e2,t2], loc='lower right')
 
     plt.show()
 

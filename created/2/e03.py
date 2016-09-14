@@ -74,7 +74,7 @@ t2, = plt.semilogx(faux_iptg, q18m_fit, color='g', alpha=0.5, \
 t3, = plt.semilogx(faux_iptg, q18a_fit, color='b', alpha=0.5, \
     label='q18a theoretical')
 
-plt.legend(handles=[e1,t1,e2,t2,e3,t3], loc='bottom right')
+plt.legend(handles=[e1,t1,e2,t2,e3,t3], loc='lower right')
 plt.show()
 
 """ Plot `Data collapse` illustration with Bohr parameter and fold change equation. """
@@ -97,6 +97,6 @@ g, = plt.plot(np.array([bohr_parameter(c, q18m_RK_ratio) for c in q18m_iptg]), q
 b, = plt.plot(np.array([bohr_parameter(c, q18a_RK_ratio) for c in q18a_iptg]), q18a_fc, \
     marker='.', color='b', linestyle='none', label='q18a')
 
-plt.legend(handles=[t,r,g,b], loc='bottom right')
+plt.legend(handles=[t,r,g,b], loc='lower right')
 plt.show()
 
