@@ -28,14 +28,34 @@ def gen_backtracks(n=10000):
 
     return bt_reps
 
-# binsize again?
-bts = gen_backtracks()
+rerun_simulation = False
+filename = '../../data/my_pause_steps.csv'
 
-plt.hist(gen_backtracks(), normed=True)
-plt.title('Backtrack step counts on pause')
+if rerun_simulation:
+    # binsize again?
+    bts = gen_backtracks()
+
+    # doesn't illustrate the power law distributed data very well
+    #plt.hist(gen_backtracks(), normed=True)
+    #plt.title('Backtrack step counts on pause')
+    #plt.show()
+
+    bt_sorted, bt_cpf = stats.ecdf(bts)
+    
+    # turn the recorded step counts into a DataFrame
+    d = {'steps until +1': bts}
+    df = pd.DataFrame(data=d)
+
+    # save the data as a DataFrame to save it in a manner consistent with theme today
+    df.to_csv(filename, index=False)
+
+if not rerun_simulation:
+    df = pd.read_csv(filename)
+
+# determine a reasonable range to plot the histogram over
+max_pwr = np.log(df['steps until +1'].max()) / np.log(10)
+
+plt.hist(df['steps until +1'], bins=np.logspace(0, max_pwr, 50))
+plt.gca().set_xscale('log')
+plt.gca().set_yscale('log')
 plt.show()
-
-bt_sorted, bt_cpf = stats.ecdf(bts)
-
-
-
