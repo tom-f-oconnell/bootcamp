@@ -38,9 +38,9 @@ im_phase_thresh = phase_im < thresh
 #    plt.imshow(im_phase_thresh, cmap=plt.cm.Greys_r)
 #    plt.show()
 
-with sns.axes_style('dark'):
-    plt.imshow(cfp_im, cmap=plt.cm.viridis)
-    plt.show()
+#with sns.axes_style('dark'):
+#    plt.imshow(cfp_im, cmap=plt.cm.viridis)
+#    plt.show()
 
 # slice out region with hot pixel (most intense and causing poor scaling of other values)
 #selem = skimage.morphology.disk(1)
@@ -54,11 +54,34 @@ selem = skimage.morphology.square(3)
 cfp_filt = skimage.filters.median(cfp_im, selem)
 
 # alternative to this context managing syntax? this seems to be the norm not the exception
-with sns.axes_style('dark'):
-    plt.imshow(cfp_filt, cmap=plt.cm.viridis)
-    plt.show()
+#with sns.axes_style('dark'):
+#    plt.figure()
+#    plt.imshow(cfp_im[150:250, 450:550] / cfp_im.max(), cmap=plt.cm.viridis)
+#    
+#    plt.figure()
+#    plt.imshow(cfp_filt[150:250, 450:550] / cfp_filt.max(), cmap=plt.cm.viridis)
+#    plt.show()
 
 # if the hot pixels are really consistent, are there some other built tools to use that info?
 # seems median filter would lose (some) edge information for segmentation
 
+cfp_thresh = cfp_filt > 120
+plt.close()
+with sns.axes_style('dark'):
+    plt.imshow(cfp_thresh, cmap=plt.cm.Greys_r)
 
+# now try thresholding with Otsu's method
+phase_thresh = skimage.filters.threshold_otsu(phase_im)
+cfp_thresh = skimage.filters.threshold_otsu(cfp_filt)
+phase_otsu = phase_im < phase_thresh
+cfp_otsu = cfp_filt > cfp_thresh
+
+with sns.axes_style('dark'):
+    plt.figure()
+    plt.imshow(phase_otsu, cmap=plt.cm.Greys_r)
+    plt.title('phase otsu')
+
+    plt.figure()
+    plt.imshow(cfp_otsu, cmap=plt.cm.Greys_r)
+    plt.title('cfp otsu')
+    plt.show()
