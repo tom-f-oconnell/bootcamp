@@ -24,6 +24,10 @@ I_0_guess = 0.9 - 0.2
 lam_guess = 0.25
 p0 = np.array([I_0_guess, a_guess, lam_guess])
 
+"""
+Will have an unphysical answer (as in class) without a guess.
+Consider transforming parameters to their log for optimization.
+"""
 popt, _ = sopt.curve_fit(gradient_model, df['x'], df['I_bcd'], p0=p0)
 
 x_smooth = np.linspace(0, 1, 200)
