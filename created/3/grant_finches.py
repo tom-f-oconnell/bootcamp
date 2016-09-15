@@ -27,6 +27,14 @@ finch_2012 = finch_2012.rename(columns=std_name)
 
 df = pd.concat((finch_1973, finch_1975, finch_1987, finch_1991, finch_2012), axis=0)
 
+# remove duplicates within the same year (TODO check this against Justin's complete file)
+df.drop_duplicates(subset={'year','band'}, inplace=True)
+
 # can compare to finch_complete
-finch_complete = pd.read_csv('../../data/grant_complete.csv', comment='#')
+# finch_complete = pd.read_csv('../../data/grant_complete.csv', comment='#')
+
+# save the file. can maybe diff to compare if same file is gauranteed with these params
+df.to_csv('../../my_grant_complete.csv', index=False)
+
+
 

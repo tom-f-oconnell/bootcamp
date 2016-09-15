@@ -36,7 +36,6 @@ print(df_tidy)
 print(df_tidy.loc[(df_tidy['food density'] == 'low') & (df_tidy['cross-sectional area' + \
     ' (sq. micron)'] > 2100), :])
 
-
 wc_dict = {'Klose': 16,
            'Fontaine': 13,
            'Klinsmann': 11,
