@@ -82,19 +82,15 @@ plt.figure()
 years = sorted(list(set(df.year)))
 alphas = np.linspace(0.2, 1, len(years))
 
-# TODO problem now is all data seems the same across years:w
 for year, a in zip(years, alphas):
-    plt.figure()
-    print('Plotting data from year ', year)
-    
     fortis = df.loc[(df['species'] == 'fortis') & (df['year'] == year)]
     scandens = df.loc[(df['species'] == 'scandens') & (df['year'] == year)]
 
-    print(len(fortis))
-    print(len(scandens))
-    
-    plt.plot(fortis_length, fortis_depth, alpha=a, marker='.', linestyle='none', color='b')
-    plt.plot(scandens_length, scandens_depth, alpha=a, marker='.',linestyle='none',color='r')
+    plt.plot(fortis['beak length (mm)'], fortis['beak depth (mm)'], alpha=a, \
+        marker='.', linestyle='none', color='b')
+
+    plt.plot(scandens['beak length (mm)'], scandens['beak depth (mm)'], \
+        alpha=a, marker='.',linestyle='none',color='r')
 
     plt.title('Distribution of beak lengths in year ' + str(year))
     plt.ylabel('Beak depth (mm)')
