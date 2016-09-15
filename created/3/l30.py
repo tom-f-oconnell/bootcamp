@@ -20,7 +20,7 @@ df_low = pd.read_csv('../../data/xa_low_food.csv', comment='#', header=None)
 
 df_low.columns = ['low']
 df_high.columns = ['high']
-df = pd.concat((df_low, df_high), axis=1)
+df = pd.concat((df_low, df_high), axis=1, ignoreindex=False)
 df.to_csv('../../data/xa_food.csv', index=False)
 
 df = pd.read_csv('../../data/xa_food.csv')

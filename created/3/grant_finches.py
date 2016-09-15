@@ -29,7 +29,8 @@ finch_1987 = finch_1987.rename(columns=std_name)
 finch_1991 = finch_1991.rename(columns=std_name)
 finch_2012 = finch_2012.rename(columns=std_name)
 
-df = pd.concat((finch_1973, finch_1975, finch_1987, finch_1991, finch_2012), axis=0)
+df = pd.concat((finch_1973, finch_1975, finch_1987, finch_1991, finch_2012), axis=0, \
+    ignoreindex=False)
 
 # remove duplicates within the same year (TODO check this against Justin's complete file)
 df.drop_duplicates(subset={'year','band'}, inplace=True)
