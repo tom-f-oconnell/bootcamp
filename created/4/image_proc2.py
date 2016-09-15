@@ -57,13 +57,12 @@ cutoff = 300
 # make a copy since we will be changing this image in the loop below
 im_cells = np.copy(seg_lab) > 0
 
-# TODO error?
 for i in range(len(areas)):
     if areas[i] < cutoff:
-        #print(seg_label == props[i].label)
         im_cells[seg_lab == props[i].label] = 0
 
-area_filt_lab = skimage.measure.regionprops(im_cells)
+# what does this do?
+area_filt_lab = skimage.measure.label(im_cells)
 plt.figure()
 plt.imshow(area_filt_lab, cmap=plt.cm.Spectral_r)
 
