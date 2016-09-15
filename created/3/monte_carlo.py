@@ -3,10 +3,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
+import numba
 
 import stats
 
 # website says tau (step time) is about 0.5 sec, but we just care about steps for now
+@numba.jit()
 def backtrack_steps():
     t = 0
     x = 0
@@ -19,6 +21,7 @@ def backtrack_steps():
 
     return t
 
+@numba.jit()
 def gen_backtracks(n=10000):
     bt_reps = np.empty(n)
 
@@ -28,7 +31,7 @@ def gen_backtracks(n=10000):
 
     return bt_reps
 
-rerun_simulation = False
+rerun_simulation = True
 filename = '../../data/my_pause_steps.csv'
 
 if rerun_simulation:
@@ -58,4 +61,11 @@ max_pwr = np.log(df['steps until +1'].max()) / np.log(10)
 plt.hist(df['steps until +1'], bins=np.logspace(0, max_pwr, 50))
 plt.gca().set_xscale('log')
 plt.gca().set_yscale('log')
+plt.title('Steps before simulated pauses end')
+plt.xlabel('Number of steps')
+plt.ylabel('Cumulative probability')
 plt.show()
+
+"""
+CCDF exponent of -1/2 => PDF exponent of -3/2 b/c CDF is integral (but CCDF?)
+"""
