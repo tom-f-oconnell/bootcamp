@@ -12,11 +12,13 @@ finch_1987 = pd.read_csv('../../data/grant_1987.csv', comment='#')
 finch_1991 = pd.read_csv('../../data/grant_1991.csv', comment='#')
 finch_2012 = pd.read_csv('../../data/grant_2012.csv', comment='#')
 
-#finch_1973['year'] = np.ones(len(finch_1973)) * 1973
-finch_1975['year'] = np.ones(len(finch_1975)) * 1975
-finch_1987['year'] = np.ones(len(finch_1987)) * 1987
-finch_1991['year'] = np.ones(len(finch_1991)) * 1991
-finch_2012['year'] = np.ones(len(finch_2012)) * 2012
+finch_1973 = finch_1973.drop('yearband', axis=1)
+
+finch_1973['year'] = np.ones(len(finch_1973)).astype(int) * 1973
+finch_1975['year'] = np.ones(len(finch_1975)).astype(int) * 1975
+finch_1987['year'] = np.ones(len(finch_1987)).astype(int) * 1987
+finch_1991['year'] = np.ones(len(finch_1991)).astype(int) * 1991
+finch_2012['year'] = np.ones(len(finch_2012)).astype(int) * 2012
 
 std_name = {'Beak length, mm': 'beak length (mm)', 'Beak depth, mm': 'beak depth (mm)', \
             'yearband': 'year', 'blength': 'beak length (mm)', 'beak depth': 'beak depth (mm)'\
@@ -73,13 +75,31 @@ plt.xlabel('Beak length (mm)')
 plt.legend(('Fortis', 'Scandens'))
 plt.margins(0.02)
 
+# plot depth - length curves over time for the two species
+
 plt.figure()
-plt.plot(fortis_length, fortis_depth, marker='.', linestyle='none', color='b')
-plt.plot(scandens_length, scandens_depth, marker='.', linestyle='none', color='r')
-plt.title('Distribution of beak lengths in 1987')
-plt.ylabel('Beak depth (mm)')
-plt.xlabel('Beak length (mm)')
-plt.legend(('Fortis', 'Scandens'))
-plt.margins(0.02)
+
+years = sorted(list(set(df.year)))
+alphas = np.linspace(0.2, 1, len(years))
+
+# TODO problem now is all data seems the same across years:w
+for year, a in zip(years, alphas):
+    plt.figure()
+    print('Plotting data from year ', year)
+    
+    fortis = df.loc[(df['species'] == 'fortis') & (df['year'] == year)]
+    scandens = df.loc[(df['species'] == 'scandens') & (df['year'] == year)]
+
+    print(len(fortis))
+    print(len(scandens))
+    
+    plt.plot(fortis_length, fortis_depth, alpha=a, marker='.', linestyle='none', color='b')
+    plt.plot(scandens_length, scandens_depth, alpha=a, marker='.',linestyle='none',color='r')
+
+    plt.title('Distribution of beak lengths in year ' + str(year))
+    plt.ylabel('Beak depth (mm)')
+    plt.xlabel('Beak length (mm)')
+    plt.legend(('Fortis', 'Scandens'))
+    plt.margins(0.02)
 
 plt.show()
