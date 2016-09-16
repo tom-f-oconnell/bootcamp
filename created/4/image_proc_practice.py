@@ -44,16 +44,19 @@ def segment(img, thresh=None, med_width=3, blur_width=50, area_thresh=300):
 
     # set one of each of the ranges to the extreme values of the other dimension (0 and max)
     x_range1[:,0] = np.arange(0, x_size, dtype=int)
-    x_range1[:,1] = np.ones(x_size, dtype=int) * y_size
     x_range2[:,0] = np.arange(0, x_size, dtype=int)
+    x_range1[:,1] = np.ones(x_size, dtype=int) * y_size
 
     y_range1[:,1] = np.arange(0, y_size, dtype=int)
-    y_range1[:,0] = np.ones(y_size, dtype=int) * x_size
     y_range2[:,1] = np.arange(0, y_size, dtype=int)
+    y_range1[:,0] = np.ones(y_size, dtype=int) * x_size
 
     # TODO test more, but seems right
-    # print(x_range1)
-    # print(y_range2)
+    print(img.shape)
+    print(x_range1)
+    print(x_range2)
+    print(y_range1)
+    print(y_range2)
     
     for i in range(len(areas)):
         # filter out things too small
@@ -65,7 +68,21 @@ def segment(img, thresh=None, med_width=3, blur_width=50, area_thresh=300):
 
         # filter out blobs ACTUALLY INCLUDING one of the edge coordinates
         for c in props[i].coords:
-            if c in x_range1 or c in x_range2 or c in y_range1 or c in y_range2:
+            b = False
+            if c in x_range1:
+                b = True
+                print('c ' + str(c) + ' was in xrange1')
+            if c in x_range2:
+                b = True
+                print('c ' + str(c) + ' was in xrange2')
+            if c in y_range1:
+                b = True
+                print('c ' + str(c) + ' was in yrange1')
+            if c in y_range2:
+                b = True
+                print('c ' + str(c) + ' was in yrange2')
+
+            if b:
                 im_cells[seg_lab == props[i].label] = 0
     
     # what does this do?
