@@ -47,6 +47,20 @@ for i, img in enumerate(stack):
 plt.figure()
 i = np.random.randint(0, len(stack))
 
+xmax, ymax = stack[0].shape
+bar_height = 3 # pixels
+scale_length = 10 # um
+interpixel_dist = 0.0636 # um (reported in exercise) consistent across datasets?
+scale_pixel_length = round(scale_length / interpixel_dist)
+
+# burn a scale bar in to the data
+# do not save this manipulated data over original, of course
+for i in range(len(stack)):
+    end = round(xmax * 0.9)
+    ycoord = round(ymax * 0.9)
+    # max 16bit value
+    stack[i][end - scale_pixel_length : end, ycoord : ycoord + bar_height] = 65535
+
 # Build RGB image by stacking grayscale images
 im_rgb = np.dstack(3 * [stack[i] / stack[i].max()])
 labeled = seg_stack[i] > 0
