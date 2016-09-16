@@ -41,10 +41,23 @@ plt.show()
 seg_stack = [None] * len(bac_tifs)
 
 for i, img in enumerate(stack):
+    print('Segmenting ' + str(i) + 'th image.')
     seg_stack[i] = improc.segment(img)
 
 plt.figure()
 i = np.random.randint(0, len(stack))
-plt.imshow(seg_stack[i], cmap=plt.cm.viridis)
+
+# Build RGB image by stacking grayscale images
+im_rgb = np.dstack(3 * [stack[i] / stack[i].max()])
+labeled = seg_stack[i] > 0
+
+# Only show green channel on bacteria
+im_rgb[labeled, 0] = 0
+im_rgb[labeled, 1] = seg_stack[i][labeled]
+im_rgb[labeled, 2] = 0
+
+plt.imshow(im_rgb)
+
 plt.title('Segmented version of the ' + str(i) + 'th image')
 plt.show()
+
