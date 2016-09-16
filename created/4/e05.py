@@ -96,7 +96,8 @@ s0 = np.array([I_0_guess, lam_guess])
 ts = np.arange(0, len(sums))
 s_opt, _ = sopt.curve_fit(gradient_model, ts, sums, p0=s0)
 
-x_smooth = np.linspace(0, 1, 200)
+# TODO is this the problem? scales still off?
+x_smooth = np.linspace(0, max(sums), 200)
 I_smooth = gradient_model(x_smooth, *tuple(s_opt))
 
 plt.close('all')
