@@ -48,4 +48,4 @@ def segment(img, thresh=None, med_width=3, blur_width=50, area_thresh=300):
 
     return area_filt_lab
 
-cfp_im = skimage.io.imread('../../data/bsub_100x_cfp.tif')
+# cfp_im = skimage.io.imread('../../data/bsub_100x_cfp.tif')
