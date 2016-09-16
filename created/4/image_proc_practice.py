@@ -23,8 +23,7 @@ def segment(img, thresh=None, med_width=3, blur_width=50, area_thresh=300):
     
     if thresh == None:
         thresh = skimage.filters.threshold_otsu(img_sub)
-
-    # TODO maybe reverse inequality
+    
     img_thresh = img_sub > thresh
      
     seg_lab, num_cells = skimage.measure.label(img_thresh, return_num=True, background=0)
@@ -34,56 +33,13 @@ def segment(img, thresh=None, med_width=3, blur_width=50, area_thresh=300):
     
     # make a copy since we will be changing this image in the loop below
     im_cells = np.copy(seg_lab) > 0
-
-    # get a representation of the borders, so we can check if blocks intersect them
-    x_size, y_size = img.shape
-    x_range1 = np.zeros((x_size, 2), dtype=int)
-    y_range1 = np.zeros((y_size, 2), dtype=int)
-    x_range2 = np.zeros((x_size, 2), dtype=int)
-    y_range2 = np.zeros((y_size, 2), dtype=int)
-
-    # set one of each of the ranges to the extreme values of the other dimension (0 and max)
-    x_range1[:,0] = np.arange(0, x_size, dtype=int)
-    x_range2[:,0] = np.arange(0, x_size, dtype=int)
-    x_range1[:,1] = np.ones(x_size, dtype=int) * y_size
-
-    y_range1[:,1] = np.arange(0, y_size, dtype=int)
-    y_range2[:,1] = np.arange(0, y_size, dtype=int)
-    y_range1[:,0] = np.ones(y_size, dtype=int) * x_size
-
-    # TODO test more, but seems right
-    print(img.shape)
-    print(x_range1)
-    print(x_range2)
-    print(y_range1)
-    print(y_range2)
     
+    seg_lab = skimage.segmentation.clear_border(seg_lab)
+
     for i in range(len(areas)):
         # filter out things too small
         if areas[i] < area_thresh:
             im_cells[seg_lab == props[i].label] = 0
-        
-        # an example of a way to see if a coord is in a set
-        #print(np.array([834, 115]) in props[i].coords)
-
-        # filter out blobs ACTUALLY INCLUDING one of the edge coordinates
-        for c in props[i].coords:
-            b = False
-            if c in x_range1:
-                b = True
-                print('c ' + str(c) + ' was in xrange1')
-            if c in x_range2:
-                b = True
-                print('c ' + str(c) + ' was in xrange2')
-            if c in y_range1:
-                b = True
-                print('c ' + str(c) + ' was in yrange1')
-            if c in y_range2:
-                b = True
-                print('c ' + str(c) + ' was in yrange2')
-
-            if b:
-                im_cells[seg_lab == props[i].label] = 0
     
     # what does this do?
     area_filt_lab = skimage.measure.label(im_cells)
