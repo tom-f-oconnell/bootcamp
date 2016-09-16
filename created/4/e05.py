@@ -10,7 +10,15 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import image_proc_practice as improc
 
-import time
+import scipy.optimize as sopt
+
+def gradient_model(x, I_0, lam):
+    """Model for colony fluorescence gradient: exponential growth plus a constant background. """
+
+    assert np.any(np.array(x) >= 0)
+    assert np.any(np.array([I_0, lam]) >= 0)
+
+    return I_0 * np.exp(x / lam)
 
 sns.set_style('dark')
 
@@ -70,8 +78,34 @@ im_rgb[labeled, 0] = 0
 im_rgb[labeled, 1] = seg_stack[i][labeled]
 im_rgb[labeled, 2] = 0
 
-plt.imshow(im_rgb)
+#plt.imshow(im_rgb)
+#plt.title('Segmented version of the ' + str(i) + 'th image')
+#plt.show()
 
-plt.title('Segmented version of the ' + str(i) + 'th image')
+sums = np.zeros(len(stack))
+
+# sum the fluorescence within all segmented regions per stack to monitor growth
+for i in range(len(stack)):
+    sums[i] = stack[i][seg_stack[i] > 0].sum()
+
+# perform an exponential regression to fit the curve
+I_0_guess = 1
+lam_guess = 0.5
+s0 = np.array([I_0_guess, lam_guess])
+
+ts = np.arange(0, len(sums))
+s_opt, _ = sopt.curve_fit(gradient_model, ts, sums, p0=s0)
+
+x_smooth = np.linspace(0, 1, 200)
+I_smooth = gradient_model(x_smooth, *tuple(s_opt))
+
+plt.close('all')
+
+plt.plot(ts, sums, marker='.', linestyle='none', color='r')
+plt.plot(x_smooth, I_smooth, color='gray')
+
+plt.xlabel('Time point')
+plt.ylabel('Total fluorescence in segmented region')
+plt.title('Colony growth through area')
+
 plt.show()
-

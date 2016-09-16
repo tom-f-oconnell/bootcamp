@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import scipy.optimize as sopt
-
 def gradient_model(x, I_0, a, lam):
     """ Model for Bcd gradient: exponential decay plus a constant background. """
 
